@@ -26,7 +26,7 @@ export default function ButtonsBox({
         style={{ margin: "20px auto", width: "40px", cursor: "pointer" }}
         onClick={logoutHandler}
       >
-        <img style={{ width: "33px" }} src={logoutIcon} alt="Log Out" />
+        <img style={{ width: "40px" }} src={logoutIcon} alt="Log Out" />
       </div>
     </div>
   );

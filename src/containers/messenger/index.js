@@ -9,6 +9,8 @@ import Search from "../../components/Search/Search";
 import Welcome from "../../components/Welcome/Welcome";
 import ButtonsBox from "../../components/ButtonsBox/ButtonsBox";
 import apiClient from "../../utils/apiclient";
+import infoIcon from "../../assets/information.svg";
+import InformationModal from "../../components/InformationModal/InformationModal";
 import { availableUsers } from "../../utils/constants";
 
 export default function Messenger({ id, name, logout }) {
@@ -24,7 +26,8 @@ export default function Messenger({ id, name, logout }) {
   const [personalChatContact, setPersonalChatContact] = React.useState(null); // value holder for personal chat contact selected
   const [groupChatContact, setGroupChatContact] = React.useState(null); // value holder for group chat contact selected
   const [groupChatName, setGroupChatName] = React.useState(""); // value holder for group chat contact selected
-
+  const [currentMessageInfo, setCurrentMessageInfo] = React.useState(null);
+  const [showInfoModal, setShowInfoModal] = React.useState(false);
   const usersForChat = availableUsers.filter((el) => el.value !== id);
 
   useEffect(() => {
@@ -120,6 +123,23 @@ export default function Messenger({ id, name, logout }) {
     setGroupChatName(event.target.value);
   };
 
+  const handleInfoOpen = async () => {
+    try {
+      const { data } = await apiClient.get(
+        `/conversation/${contactSelected.conversationId}`
+      );
+      console.log("info", data);
+      setCurrentMessageInfo(data);
+      setShowInfoModal(true);
+    } catch (error) {
+      console.log("error in opening info", error);
+    }
+  };
+
+  const handleInfoClose = () => {
+    setShowInfoModal(false);
+  };
+
   return (
     <div className="app">
       <aside>
@@ -147,6 +167,24 @@ export default function Messenger({ id, name, logout }) {
       {contactSelected.conversationId ? (
         <main>
           <header>
+            <div>
+              <img
+                style={{ width: "29px" }}
+                src={infoIcon}
+                alt=""
+                onClick={async () => {
+                  await handleInfoOpen();
+                }}
+              />
+            </div>
+            {currentMessageInfo && (
+              <InformationModal
+                conversationInfo={currentMessageInfo}
+                handleCancel={handleInfoClose}
+                handleOk={handleInfoClose}
+                modalVisible={showInfoModal}
+              />
+            )}
             <Avatar
               user={contactSelected}
               showName={
@@ -155,7 +193,6 @@ export default function Messenger({ id, name, logout }) {
                   : "Unnamed conversation"
               }
             />
-            <div>Info</div>
           </header>
           <MessageBox messages={currentMessages} />
           <ChatInputBox
