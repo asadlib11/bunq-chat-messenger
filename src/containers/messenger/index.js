@@ -120,8 +120,6 @@ export default function Messenger({ id, name, logout }) {
     setGroupChatName(event.target.value);
   };
 
-  mainUser.avatar =
-    "https://pbs.twimg.com/profile_images/501759258665299968/3799Ffxy.jpeg";
   return (
     <div className="app">
       <aside>

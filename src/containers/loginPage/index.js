@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { availableUsers } from "../../utils/constants";
 import bunqLogo from "../../assets/BunqLogo.svg";
 export default function Login({ selectUser }) {
