@@ -1,7 +1,7 @@
 import React from "react";
 import doubleCheck from "../../assets/done_all.svg";
 
-export default function Message({ message }) {
+export default function Message({ message, id }) {
   let senderName = "";
   switch (message.senderId) {
     case "1":
@@ -29,9 +29,7 @@ export default function Message({ message }) {
       break;
   }
   return (
-    <div
-      className={`message ${message.senderId === "1" ? "sent" : "received"}`}
-    >
+    <div className={`message ${message.senderId === id ? "sent" : "received"}`}>
       <div>
         <span style={{ color: "Red", fontWeight: "bolder" }}>{senderName}</span>
       </div>

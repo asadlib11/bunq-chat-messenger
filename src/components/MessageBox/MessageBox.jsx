@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import Message from "../Message/Message";
 
-export default function MessageBox({ messages }) {
+export default function MessageBox({ messages, id }) {
   const endDiv = useRef(null);
   useEffect(() => {
     endDiv.current.scrollIntoView();
@@ -10,7 +10,7 @@ export default function MessageBox({ messages }) {
     <div className="chats">
       <div style={{ float: "right", clear: "both" }} ref={endDiv}></div>
       {messages.map((m) => {
-        return <Message message={m} key={m.id} />;
+        return <Message message={m} key={m.id} id={id} />;
       })}
     </div>
   );

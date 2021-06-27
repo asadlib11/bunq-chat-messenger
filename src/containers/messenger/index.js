@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Checkbox, Radio } from "antd";
+import { Modal, Checkbox, Radio, Spin } from "antd";
 import { mainUser } from "../../generateFakeData";
 import Avatar from "../../components/Avatar/Avatar";
 import ContactBox from "../../components/ContactBox/ContactBox";
@@ -14,6 +14,7 @@ import InformationModal from "../../components/InformationModal/InformationModal
 import { availableUsers } from "../../utils/constants";
 
 export default function Messenger({ id, name, logout }) {
+  const [allConvos, setAllConvos] = useState([]);
   const [data, setData] = useState([]); // contact boxes data
   const [contactSelected, setContactSelected] = useState({}); // conversation selected data
   const [currentMessages, setCurrentMessages] = useState([]); // current messages are messages in the conversation/Message box
@@ -42,11 +43,17 @@ export default function Messenger({ id, name, logout }) {
   const getConversations = async () => {
     try {
       const { data } = await apiClient.get(`/conversation/user/${id}`);
-      const subArray = data.slice(1, 10);
+      setAllConvos(data);
+      const subArray = data.slice(1, 20);
       setData(subArray);
     } catch (err) {
       await getConversations();
     }
+  };
+
+  const loadMoreMessages = () => {
+    const moreMessages = allConvos.slice(data.length, data.length + 20);
+    setData([...data, ...moreMessages]);
   };
 
   const getMessages = async (conversation) => {
@@ -54,7 +61,6 @@ export default function Messenger({ id, name, logout }) {
       `/conversation/${conversation.conversationId}/message/limited?limit=50&offset=0`
     );
     setCurrentMessages(data);
-    console.log("Messages", data);
   };
 
   const pushMessage = async () => {
@@ -162,6 +168,26 @@ export default function Messenger({ id, name, logout }) {
               />
             );
           })}
+          {filteredContacts.length > 0 ? (
+            <div>
+              <button style={{ width: "100%" }} onClick={loadMoreMessages}>
+                Load More Messages
+              </button>
+            </div>
+          ) : (
+            <div style={{ textAlign: "center" }}>
+              <Spin
+                style={{
+                  width: "20%",
+                  margin: "auto",
+                  marginTop: "30%",
+                  marginBottom: "7%",
+                }}
+                size={"large"}
+              />
+              <h3>Loading Messages...</h3>
+            </div>
+          )}
         </div>
       </aside>
       {contactSelected.conversationId ? (
@@ -194,7 +220,7 @@ export default function Messenger({ id, name, logout }) {
               }
             />
           </header>
-          <MessageBox messages={currentMessages} />
+          <MessageBox id={id} messages={currentMessages} />
           <ChatInputBox
             message={message}
             setMessage={setMessage}
