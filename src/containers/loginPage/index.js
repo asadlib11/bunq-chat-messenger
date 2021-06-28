@@ -18,7 +18,7 @@ export default function Login({ selectUser }) {
         }}
       >
         <img src={bunqLogo} alt="" />
-        <h1>Welcome to Bunq chat</h1>
+        <h1>Welcome to Bunqr chat</h1>
         <h3>Please Select your user</h3>
         <div>
           {availableUsers.map((user, key) => {
