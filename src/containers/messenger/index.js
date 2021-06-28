@@ -48,8 +48,11 @@ export default function Messenger({ id, name, logout }) {
   const getConversations = async () => {
     try {
       const { data } = await apiClient.get(`/conversation/user/${id}`);
-      setAllConvos(data);
-      const subArray = data.slice(1, 20);
+      const myData = data.sort(
+        (a, b) => b.conversation.conversationId - a.conversation.conversationId
+      );
+      setAllConvos(myData);
+      const subArray = myData.slice(0, 19);
       setData(subArray);
     } catch (err) {
       await getConversations();
@@ -122,16 +125,11 @@ export default function Messenger({ id, name, logout }) {
 
   const handlePersonalChatOk = async () => {
     try {
-      const createPersonalChat = await apiClient.post(
-        "/conversation/personal",
-        {
-          users: personalChatContact + "," + id,
-        }
-      );
-      const newChatId = createPersonalChat.data.id;
-      console.log("new chat id is", newChatId);
-      setIsPersonalChatModalVisible(false);
+      await apiClient.post("/conversation/personal", {
+        users: personalChatContact + "," + id,
+      });
       await getConversations();
+      setIsPersonalChatModalVisible(false);
     } catch (err) {
       console.log("error occurred");
     }
@@ -140,16 +138,12 @@ export default function Messenger({ id, name, logout }) {
   const handleGroupChatOk = async () => {
     if (groupChatContact.length !== 0 && groupChatName.trim() !== "") {
       try {
-        console.log("Selected contacts", groupChatContact);
-        console.log("Group chat name", groupChatName);
-        const createGroupChat = await apiClient.post("/conversation/group", {
+        await apiClient.post("/conversation/group", {
           users: groupChatContact.join(",") + "," + id,
           name: groupChatName,
         });
-        const newChatId = createGroupChat.data.id;
-        console.log("new chat id is", newChatId);
-        setIsGroupChatModalVisible(false);
         await getConversations();
+        setIsGroupChatModalVisible(false);
       } catch (err) {
         console.log("error occurred");
       }
@@ -170,7 +164,6 @@ export default function Messenger({ id, name, logout }) {
       const { data } = await apiClient.get(
         `/conversation/${contactSelected.conversationId}`
       );
-      console.log("info", data);
       setCurrentMessageInfo(data);
       setShowInfoModal(true);
     } catch (error) {
