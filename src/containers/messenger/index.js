@@ -5,6 +5,7 @@ import Avatar from "../../components/Avatar/Avatar";
 import ContactBox from "../../components/ContactBox/ContactBox";
 import MessageBox from "../../components/MessageBox/MessageBox";
 import ChatInputBox from "../../components/ChatInputBox/ChatInputBox";
+import ReactTooltip from "react-tooltip";
 // import Search from "../../components/Search/Search";
 import Welcome from "../../components/Welcome/Welcome";
 import ButtonsBox from "../../components/ButtonsBox/ButtonsBox";
@@ -179,7 +180,7 @@ export default function Messenger({ id, name, logout }) {
     <div className="app">
       <aside>
         <header>
-          <Avatar user={mainUser} showName={name}></Avatar>
+          <Avatar welcome user={mainUser} showName={name}></Avatar>
         </header>
         {/* <Search search={search} handleSearch={handleSearch} /> */}
         <ButtonsBox
@@ -227,7 +228,7 @@ export default function Messenger({ id, name, logout }) {
       {contactSelected.conversationId ? (
         <main>
           <header>
-            <div>
+            <div data-tip="Conversation Information">
               <img
                 style={{ width: "29px" }}
                 src={infoIcon}
@@ -237,6 +238,7 @@ export default function Messenger({ id, name, logout }) {
                 }}
               />
             </div>
+            <ReactTooltip />
             {currentMessageInfo && (
               <InformationModal
                 conversationInfo={currentMessageInfo}

@@ -1,13 +1,7 @@
 import React from "react";
-import doubleCheck from "../../assets/done_all.svg";
 import Avatar from "../Avatar/Avatar";
 
 export default function ContactBox({ contact, setContactSelected }) {
-  // const maxTimestamp = Math.max(...messages.map((m) => m.date.getTime()));
-  // const lastMsg = messages.find((m) => m.date.getTime() === maxTimestamp);
-  // const truncate = (text, length) => {
-  //   return text.length > length ? `${text.substring(0, length)} ...` : text;
-  // };
   return (
     <div
       className="contact-box"
@@ -25,10 +19,6 @@ export default function ContactBox({ contact, setContactSelected }) {
           <span className="time-mark">
             {contact.lastseen ? contact.lastseen : "No Last Seen time"}
           </span>
-        </div>
-        <div className="last-msg">
-          <img src={doubleCheck} alt="" className="icon-small" />
-          <span className="text">trunacted message</span>
         </div>
       </div>
     </div>
