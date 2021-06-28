@@ -5,7 +5,7 @@ import Avatar from "../../components/Avatar/Avatar";
 import ContactBox from "../../components/ContactBox/ContactBox";
 import MessageBox from "../../components/MessageBox/MessageBox";
 import ChatInputBox from "../../components/ChatInputBox/ChatInputBox";
-import Search from "../../components/Search/Search";
+// import Search from "../../components/Search/Search";
 import Welcome from "../../components/Welcome/Welcome";
 import ButtonsBox from "../../components/ButtonsBox/ButtonsBox";
 import apiClient from "../../utils/apiclient";
@@ -30,6 +30,9 @@ export default function Messenger({ id, name, logout }) {
   const [currentMessageInfo, setCurrentMessageInfo] = React.useState(null);
   const [showInfoModal, setShowInfoModal] = React.useState(false);
   const usersForChat = availableUsers.filter((el) => el.value !== id);
+  const [shouldScroll, setShouldScroll] = useState(true);
+  const [furtherMessages, setFurtherMessages] = useState(true);
+  const [messageLoadLoader, setMessageLoadLoader] = useState(false);
 
   useEffect(() => {
     getConversations();
@@ -39,6 +42,8 @@ export default function Messenger({ id, name, logout }) {
     filterContacts(data, search);
     getMessages(contactSelected);
   }, [contactSelected, data, search]);
+
+  useEffect(() => {}, [shouldScroll, furtherMessages, messageLoadLoader]);
 
   const getConversations = async () => {
     try {
@@ -63,6 +68,19 @@ export default function Messenger({ id, name, logout }) {
     setCurrentMessages(data);
   };
 
+  const handleLoadMoreMessage = async () => {
+    setMessageLoadLoader(true);
+    const { data } = await apiClient.get(
+      `/conversation/${contactSelected.conversationId}/message/limited?limit=50&offset=${currentMessages.length}`
+    );
+    setShouldScroll(false);
+    if (data.length === 0) {
+      setFurtherMessages(false);
+    }
+    setCurrentMessages([...currentMessages, ...data]);
+    setMessageLoadLoader(false);
+  };
+
   const pushMessage = async () => {
     await apiClient.post(
       `conversation/${contactSelected.conversationId}/message/send`,
@@ -75,48 +93,66 @@ export default function Messenger({ id, name, logout }) {
     setMessage("");
   };
 
-  const handleSearch = (input) => {
-    setSearch(input);
-    filterContacts(data, input);
-  };
+  // const handleSearch = (input) => {
+  //   setSearch(input);
+  //   console.log("search", input);
+  //   filterContacts(data, input);
+  // };
 
   const filterContacts = (data, search) => {
     const result = data.filter(({ conversation }) => {
-      return (
-        !search ||
-        conversation.name.toLowerCase().includes(search.toLowerCase())
-      );
+      if (conversation.name && search !== "") {
+        return (
+          !search ||
+          conversation.name.toLowerCase().includes(search.toLowerCase())
+        );
+      } else {
+        return conversation;
+      }
     });
     setFilteredContacts(result);
   };
 
   const personalChatCreation = () => {
     setIsPersonalChatModalVisible(true);
-    console.log("personalChat clicked");
   };
   const groupChatCreation = () => {
     setIsGroupChatModalVisible(true);
-    console.log("grouplChat clicked");
   };
 
-  const handlePersonalChatOk = () => {
-    console.log("Selected contact", personalChatContact);
-    setIsPersonalChatModalVisible(false);
+  const handlePersonalChatOk = async () => {
+    try {
+      const createPersonalChat = await apiClient.post(
+        "/conversation/personal",
+        {
+          users: personalChatContact + "," + id,
+        }
+      );
+      const newChatId = createPersonalChat.data.id;
+      console.log("new chat id is", newChatId);
+      setIsPersonalChatModalVisible(false);
+      await getConversations();
+    } catch (err) {
+      console.log("error occurred");
+    }
   };
 
   const handleGroupChatOk = async () => {
-    try {
-      console.log("Selected contacts", groupChatContact);
-      console.log("Group chat name", groupChatName);
-      const createGroupChat = await apiClient.post("/conversation/group", {
-        users: groupChatContact.join(","),
-        name: groupChatName,
-      });
-      const newChatId = createGroupChat.data.id;
-      console.log("new chat id is", newChatId);
-      setIsGroupChatModalVisible(false);
-    } catch (err) {
-      console.log("error occurred");
+    if (groupChatContact.length !== 0 && groupChatName.trim() !== "") {
+      try {
+        console.log("Selected contacts", groupChatContact);
+        console.log("Group chat name", groupChatName);
+        const createGroupChat = await apiClient.post("/conversation/group", {
+          users: groupChatContact.join(",") + "," + id,
+          name: groupChatName,
+        });
+        const newChatId = createGroupChat.data.id;
+        console.log("new chat id is", newChatId);
+        setIsGroupChatModalVisible(false);
+        await getConversations();
+      } catch (err) {
+        console.log("error occurred");
+      }
     }
   };
 
@@ -152,7 +188,7 @@ export default function Messenger({ id, name, logout }) {
         <header>
           <Avatar user={mainUser} showName={name}></Avatar>
         </header>
-        <Search search={search} handleSearch={handleSearch} />
+        {/* <Search search={search} handleSearch={handleSearch} /> */}
         <ButtonsBox
           groupChatHandler={groupChatCreation}
           personalChatHandler={personalChatCreation}
@@ -164,7 +200,12 @@ export default function Messenger({ id, name, logout }) {
               <ContactBox
                 contact={conversation}
                 key={conversation.lastseen + conversation.conversationId}
-                setContactSelected={setContactSelected}
+                setContactSelected={(contact) => {
+                  setContactSelected(contact);
+                  setShouldScroll(true);
+                  setMessageLoadLoader(false);
+                  setFurtherMessages(true);
+                }}
               />
             );
           })}
@@ -220,7 +261,14 @@ export default function Messenger({ id, name, logout }) {
               }
             />
           </header>
-          <MessageBox id={id} messages={currentMessages} />
+          <MessageBox
+            id={id}
+            messages={currentMessages}
+            getMoreMessages={handleLoadMoreMessage}
+            shouldScroll={shouldScroll}
+            furtherMessages={furtherMessages}
+            isLoading={messageLoadLoader}
+          />
           <ChatInputBox
             message={message}
             setMessage={setMessage}

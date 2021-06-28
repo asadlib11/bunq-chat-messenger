@@ -280,3 +280,10 @@ input:focus {
     margin-right: 15px;
     border: 2px outset green;
 }
+.load-more-messages {
+  height: 30px;
+  width: 159px;
+  margin: 7px;
+  border: outset;
+  background-color: white;
+}
