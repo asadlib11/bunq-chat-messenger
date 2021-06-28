@@ -9,9 +9,19 @@ export default function MessageBox({
   shouldScroll = true,
   furtherMessages,
   isLoading,
+  pollingMessage,
 }) {
-  const endDiv = useRef(null);
+  useEffect(() => {
+    let pollingMessages = setInterval(function () {
+      if (messages.length > 0) {
+        pollingMessage(messages[messages.length - 1].id);
+      }
+    }, 3000);
 
+    return () => clearInterval(pollingMessages);
+  }, [messages]);
+
+  const endDiv = useRef(null);
   useEffect(() => {
     if (shouldScroll) {
       endDiv.current.scrollIntoView();

@@ -6,7 +6,6 @@ import ContactBox from "../../components/ContactBox/ContactBox";
 import MessageBox from "../../components/MessageBox/MessageBox";
 import ChatInputBox from "../../components/ChatInputBox/ChatInputBox";
 import ReactTooltip from "react-tooltip";
-// import Search from "../../components/Search/Search";
 import Welcome from "../../components/Welcome/Welcome";
 import ButtonsBox from "../../components/ButtonsBox/ButtonsBox";
 import apiClient from "../../utils/apiclient";
@@ -66,10 +65,12 @@ export default function Messenger({ id, name, logout }) {
   };
 
   const getMessages = async (conversation) => {
-    const { data } = await apiClient.get(
-      `/conversation/${conversation.conversationId}/message/limited?limit=50&offset=0`
-    );
-    setCurrentMessages(data);
+    if (conversation && conversation.conversationId) {
+      const { data } = await apiClient.get(
+        `/conversation/${conversation.conversationId}/message/limited?limit=50&offset=0`
+      );
+      setCurrentMessages(data);
+    }
   };
 
   const handleLoadMoreMessage = async () => {
@@ -97,11 +98,14 @@ export default function Messenger({ id, name, logout }) {
     setMessage("");
   };
 
-  // const handleSearch = (input) => {
-  //   setSearch(input);
-  //   console.log("search", input);
-  //   filterContacts(data, input);
-  // };
+  const pollingMessage = async (lastMessageId) => {
+    try {
+      const { data } = await apiClient.get(
+        `/conversation/${contactSelected.conversationId}/new/${lastMessageId}`
+      );
+      setCurrentMessages([...currentMessages, ...data]);
+    } catch (error) {}
+  };
 
   const filterContacts = (data, search) => {
     const result = data.filter(({ conversation }) => {
@@ -182,7 +186,6 @@ export default function Messenger({ id, name, logout }) {
         <header>
           <Avatar welcome user={mainUser} showName={name}></Avatar>
         </header>
-        {/* <Search search={search} handleSearch={handleSearch} /> */}
         <ButtonsBox
           groupChatHandler={groupChatCreation}
           personalChatHandler={personalChatCreation}
@@ -263,6 +266,7 @@ export default function Messenger({ id, name, logout }) {
             shouldScroll={shouldScroll}
             furtherMessages={furtherMessages}
             isLoading={messageLoadLoader}
+            pollingMessage={pollingMessage}
           />
           <ChatInputBox
             message={message}
