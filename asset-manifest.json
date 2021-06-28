@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/bunq-chat-messenger/static/css/main.2c94a573.chunk.css",
+    "main.js": "/bunq-chat-messenger/static/js/main.c383a461.chunk.js",
+    "main.js.map": "/bunq-chat-messenger/static/js/main.c383a461.chunk.js.map",
+    "runtime-main.js": "/bunq-chat-messenger/static/js/runtime-main.a1409da2.js",
+    "runtime-main.js.map": "/bunq-chat-messenger/static/js/runtime-main.a1409da2.js.map",
+    "static/css/2.ecfb3f68.chunk.css": "/bunq-chat-messenger/static/css/2.ecfb3f68.chunk.css",
+    "static/js/2.b3b3b212.chunk.js": "/bunq-chat-messenger/static/js/2.b3b3b212.chunk.js",
+    "static/js/2.b3b3b212.chunk.js.map": "/bunq-chat-messenger/static/js/2.b3b3b212.chunk.js.map",
+    "index.html": "/bunq-chat-messenger/index.html",
+    "precache-manifest.0696d963eb76ce50ca28109716bb84bb.js": "/bunq-chat-messenger/precache-manifest.0696d963eb76ce50ca28109716bb84bb.js",
+    "service-worker.js": "/bunq-chat-messenger/service-worker.js",
+    "static/css/2.ecfb3f68.chunk.css.map": "/bunq-chat-messenger/static/css/2.ecfb3f68.chunk.css.map",
+    "static/css/main.2c94a573.chunk.css.map": "/bunq-chat-messenger/static/css/main.2c94a573.chunk.css.map",
+    "static/js/2.b3b3b212.chunk.js.LICENSE.txt": "/bunq-chat-messenger/static/js/2.b3b3b212.chunk.js.LICENSE.txt",
+    "static/media/BunqLogo.svg": "/bunq-chat-messenger/static/media/BunqLogo.8bd20c99.svg",
+    "static/media/App.css": "/bunq-chat-messenger/static/media/search.231fed55.svg",
+    "static/media/done_all.svg": "/bunq-chat-messenger/static/media/done_all.211c1153.svg",
+    "static/media/group_chat.svg": "/bunq-chat-messenger/static/media/group_chat.963a7dcc.svg",
+    "static/media/information.svg": "/bunq-chat-messenger/static/media/information.1c737aa4.svg",
+    "static/media/log-out.svg": "/bunq-chat-messenger/static/media/log-out.2655160e.svg",
+    "static/media/mic.svg": "/bunq-chat-messenger/static/media/mic.958bf042.svg",
+    "static/media/personal_chat.svg": "/bunq-chat-messenger/static/media/personal_chat.7c72c73f.svg",
+    "static/media/send.svg": "/bunq-chat-messenger/static/media/send.282ecb9e.svg",
+    "static/media/tag_faces.svg": "/bunq-chat-messenger/static/media/tag_faces.c50cc449.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a1409da2.js",
+    "static/css/2.ecfb3f68.chunk.css",
+    "static/js/2.b3b3b212.chunk.js",
+    "static/css/main.2c94a573.chunk.css",
+    "static/js/main.c383a461.chunk.js"
+  ]
+}
